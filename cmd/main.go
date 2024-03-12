@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -36,9 +35,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	productsMap := repository.NewProductMapRepository(products, len(products))
-	fmt.Print(productsMap.LastID)
 
+	// - repository
+	productsMap := repository.NewProductMapRepository(products, len(products))
 	// - service
 	sv := service.NewProductDefault(productsMap)
 	// - handler
@@ -53,19 +52,16 @@ func main() {
 		w.Write([]byte("pong"))
 	})
 
-	// define products route
-	router.Get("/products", hd.GetAllProducts())
-
-	router.Post("/products", hd.SaveProduct())
-
-	// define products/:id route
-	router.Get("/products/{id}", hd.GetProduct())
-	router.Put("/products/{id}", hd.UpdateProduct())
-	router.Patch("/products/{id}", hd.PartialUpdateProduct())
-	router.Delete("/products/{id}", hd.DeleteProduct())
-
-	// define products/search route
-	router.Get("/products/search", hd.GetProductsByPrice())
+	router.Route("/products", func(r chi.Router) {
+		// define routes
+		r.Get("/", hd.GetAllProducts())
+		r.Post("/", hd.SaveProduct())
+		r.Get("/{id}", hd.GetProduct())
+		r.Put("/{id}", hd.UpdateProduct())
+		r.Patch("/{id}", hd.PartialUpdateProduct())
+		r.Delete("/{id}", hd.DeleteProduct())
+		r.Get("/search", hd.GetProductsByPrice())
+	})
 
 	// start server
 	http.ListenAndServe(":8080", router)
