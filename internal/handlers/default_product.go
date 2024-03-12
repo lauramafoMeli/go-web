@@ -220,3 +220,48 @@ func (p *DefaultProduct) UpdateProduct() http.HandlerFunc {
 		w.Write([]byte("200 - OK"))
 	}
 }
+
+// Partial update product
+func (p *DefaultProduct) PartialUpdateProduct() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		//validate product
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Bad Request"))
+			return
+		}
+
+		bodyMap := map[string]any{}
+		if err := json.Unmarshal(bytes, &bodyMap); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Bad Request"))
+			return
+		}
+
+		if _, ok := bodyMap["expiration"]; ok {
+			if _, err := time.Parse("02/01/2006", fmt.Sprintf("%s", bodyMap["expiration"])); err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("Invalid expiration format"))
+				return
+			}
+		}
+
+		index, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Bad Request"))
+			return
+		}
+		err = (*p).Service.PartialUpdateProduct(index, bodyMap)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("200 - OK"))
+	}
+}

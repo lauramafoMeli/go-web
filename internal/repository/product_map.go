@@ -69,3 +69,59 @@ func (p *ProductMapRepository) UpdateProduct(product *internal.Product) (err err
 	}
 	return internal.ErrorProductNotFound
 }
+
+func (p *ProductMapRepository) PartialUpdateProduct(index int, fields map[string]any) (err error) {
+	for indexProduct, productItem := range (*p).Products {
+		if productItem.ID == index {
+			for field, value := range fields {
+				switch field {
+				case "name":
+					name, ok := value.(string)
+					if !ok {
+						return internal.ErrorProductInvalidName
+					}
+					(*p).Products[indexProduct].Name = name
+				case "quantity":
+					quantity, ok := value.(int)
+					if !ok {
+						return internal.ErrorProductInvalidQuantity
+					}
+					(*p).Products[indexProduct].Quantity = quantity
+				case "code":
+					code, ok := value.(string)
+					if !ok {
+						return internal.ErrorProductInvalidCode
+					}
+
+					//verified if code is valid
+					for _, productItem := range (*p).Products {
+						if productItem.Code == code {
+							return internal.ErrorProductDuplicated
+						}
+					}
+					(*p).Products[indexProduct].Code = code
+				case "published":
+					published, ok := value.(bool)
+					if !ok {
+						return internal.ErrorProductInvalidPublished
+					}
+					(*p).Products[indexProduct].Published = published
+				case "expiration":
+					expiration, ok := value.(string)
+					if !ok {
+						return internal.ErrorProductInvalidExpiration
+					}
+					(*p).Products[indexProduct].Expiration = expiration
+				case "price":
+					price, ok := value.(float64)
+					if !ok {
+						return internal.ErrorProductInvalidPrice
+					}
+					(*p).Products[indexProduct].Price = price
+				}
+			}
+			return nil
+		}
+	}
+	return internal.ErrorProductNotFound
+}

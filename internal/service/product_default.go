@@ -31,3 +31,7 @@ func (p *ProductDefault) SaveProduct(product *internal.Product) (err error) {
 func (p *ProductDefault) UpdateProduct(product *internal.Product) (err error) {
 	return p.Repository.UpdateProduct(product)
 }
+
+func (p *ProductDefault) PartialUpdateProduct(index int, fields map[string]any) (err error) {
+	return p.Repository.PartialUpdateProduct(index, fields)
+}
