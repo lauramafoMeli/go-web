@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/lauramafoMeli/go-web/internal"
+	"github.com/lauramafoMeli/go-web/platform/tools"
 )
 
 type ProductRequest struct {
@@ -109,47 +110,21 @@ func (p *DefaultProduct) SaveProduct() http.HandlerFunc {
 			return
 		}
 
-		if _, ok := bodyMap["name"]; !ok || bodyMap["name"] == "" {
+		err = tools.ValidateProductFields(bodyMap, "name", "quantity", "code_value", "expiration", "price")
+		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid name"))
-			return
-		}
-		if _, ok := bodyMap["quantity"]; !ok || bodyMap["quantity"] == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid quantity"))
-			return
-		}
-		if _, ok := bodyMap["code_value"]; !ok || bodyMap["code_value"] == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid code_value"))
-			return
-		}
-		if _, ok := bodyMap["is_published"]; !ok {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid is_published"))
+			w.Write([]byte(err.Error()))
 			return
 		}
 
-		if _, ok := bodyMap["expiration"]; !ok || bodyMap["expiration"] == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid expiration"))
-			return
-		} else if _, err := time.Parse("02/01/2006", fmt.Sprintf("%s", bodyMap["expiration"])); err != nil {
-			fmt.Println(err)
-			fmt.Println(bodyMap["expiration"])
+		if _, err := time.Parse("02/01/2006", fmt.Sprintf("%s", bodyMap["expiration"])); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Invalid expiration format"))
 			return
 		}
 
-		if _, ok := bodyMap["price"]; !ok || bodyMap["price"] == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Invalid price"))
-			return
-		}
-
-		//if is published is empty set to false
-		if bodyMap["is_published"] == "" {
+		//if is published validate
+		if _, ok := bodyMap["is_published"]; !ok || bodyMap["is_published"] == "" {
 			bodyMap["is_published"] = false
 		}
 
