@@ -27,3 +27,7 @@ func (p *ProductDefault) GetProductsByPrice(price float64) (products []internal.
 func (p *ProductDefault) SaveProduct(product *internal.Product) (err error) {
 	return p.Repository.SaveProduct(product)
 }
+
+func (p *ProductDefault) UpdateProduct(product *internal.Product) (err error) {
+	return p.Repository.UpdateProduct(product)
+}

@@ -54,3 +54,18 @@ func (p *ProductMapRepository) SaveProduct(product *internal.Product) (err error
 	(*p).Products = append((*p).Products, *product)
 	return nil
 }
+
+func (p *ProductMapRepository) UpdateProduct(product *internal.Product) (err error) {
+	for _, productItem := range (*p).Products {
+		if productItem.Code == (*product).Code {
+			return internal.ErrorProductDuplicated
+		}
+	}
+	for index, productItem := range (*p).Products {
+		if productItem.ID == (*product).ID {
+			(*p).Products[index] = *product
+			return nil
+		}
+	}
+	return internal.ErrorProductNotFound
+}

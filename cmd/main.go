@@ -60,6 +60,7 @@ func main() {
 
 	// define products/:id route
 	router.Get("/products/{id}", hd.GetProduct())
+	router.Put("/products/{id}", hd.UpdateProduct())
 
 	// define products/search route
 	router.Get("/products/search", hd.GetProductsByPrice())

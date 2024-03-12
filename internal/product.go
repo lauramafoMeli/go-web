@@ -17,6 +17,7 @@ type ProductsRepository interface {
 	GetProduct(id int) (product Product, err error)
 	GetProductsByPrice(price float64) (products []Product, err error)
 	SaveProduct(product *Product) (err error)
+	UpdateProduct(product *Product) (err error)
 }
 
 type ProductService interface {
@@ -24,6 +25,7 @@ type ProductService interface {
 	GetProduct(id int) (product Product, err error)
 	GetProductsByPrice(price float64) (products []Product, err error)
 	SaveProduct(product *Product) (err error)
+	UpdateProduct(product *Product) (err error)
 }
 
 var (
