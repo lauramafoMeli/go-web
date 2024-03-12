@@ -19,6 +19,7 @@ type ProductsRepository interface {
 	SaveProduct(product *Product) (err error)
 	UpdateProduct(product *Product) (err error)
 	PartialUpdateProduct(index int, fields map[string]any) (err error)
+	DeleteProduct(id int) (err error)
 }
 
 type ProductService interface {
@@ -28,6 +29,7 @@ type ProductService interface {
 	SaveProduct(product *Product) (err error)
 	UpdateProduct(product *Product) (err error)
 	PartialUpdateProduct(index int, fields map[string]any) (err error)
+	DeleteProduct(id int) (err error)
 }
 
 var (

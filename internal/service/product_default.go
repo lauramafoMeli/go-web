@@ -35,3 +35,7 @@ func (p *ProductDefault) UpdateProduct(product *internal.Product) (err error) {
 func (p *ProductDefault) PartialUpdateProduct(index int, fields map[string]any) (err error) {
 	return p.Repository.PartialUpdateProduct(index, fields)
 }
+
+func (p *ProductDefault) DeleteProduct(id int) (err error) {
+	return p.Repository.DeleteProduct(id)
+}

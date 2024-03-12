@@ -62,6 +62,7 @@ func main() {
 	router.Get("/products/{id}", hd.GetProduct())
 	router.Put("/products/{id}", hd.UpdateProduct())
 	router.Patch("/products/{id}", hd.PartialUpdateProduct())
+	router.Delete("/products/{id}", hd.DeleteProduct())
 
 	// define products/search route
 	router.Get("/products/search", hd.GetProductsByPrice())

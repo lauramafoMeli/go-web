@@ -125,3 +125,13 @@ func (p *ProductMapRepository) PartialUpdateProduct(index int, fields map[string
 	}
 	return internal.ErrorProductNotFound
 }
+
+func (p *ProductMapRepository) DeleteProduct(id int) (err error) {
+	for index, productItem := range (*p).Products {
+		if productItem.ID == id {
+			(*p).Products = append((*p).Products[:index], (*p).Products[index+1:]...)
+			return nil
+		}
+	}
+	return internal.ErrorProductNotFound
+}

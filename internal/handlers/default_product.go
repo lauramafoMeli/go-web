@@ -265,3 +265,25 @@ func (p *DefaultProduct) PartialUpdateProduct() http.HandlerFunc {
 		w.Write([]byte("200 - OK"))
 	}
 }
+
+// Delete product
+func (p *DefaultProduct) DeleteProduct() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		id := chi.URLParam(r, "id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Bad Request"))
+			return
+		}
+		err = p.Service.DeleteProduct(idInt)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("200 - OK"))
+	}
+}
